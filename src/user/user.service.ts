@@ -92,7 +92,9 @@ export class UserService {
   async delete(id: number) {
     await this.existUser(id);
 
-    return this.usersRepository.delete(id);
+    await this.usersRepository.delete(id);
+
+    return true;
   }
 
   async existUser(id: number) {
