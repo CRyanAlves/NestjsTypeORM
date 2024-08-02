@@ -8,8 +8,7 @@ import { userEntityList } from '../testing/user-entity-list.mock';
 import { accessToken } from '../testing/access-token.mock';
 import { jwtPayload } from '../testing/jwt-payload.mock';
 import { resetToken } from '../testing/reset-token.mock';
-
-import { authRegisterDto } from '../testing/register-auth-dto.mock';
+import { authRegisterDto } from '../testing/auth-register-dto.mock';
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -64,7 +63,7 @@ describe('AuthService', () => {
 
     test('Method Reset', async () => {
       const result = await authService.reset('@cryan2007', resetToken);
-      console.log(result);
+
       expect(result).toEqual({ accessToken });
     });
 

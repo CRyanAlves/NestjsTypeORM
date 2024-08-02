@@ -8,7 +8,6 @@ import {
   MaxFileSizeValidator,
   ParseFilePipe,
   Post,
-  Req,
   UploadedFile,
   UploadedFiles,
   UseGuards,
@@ -18,7 +17,6 @@ import { AuthLoginDTO } from './dto/auth-login.dto';
 import { AuthRegisterDTO } from './dto/auth-register.dto';
 import { AuthForgetDTO } from './dto/auth-forget.dto';
 import { AuthResetDTO } from './dto/auth-rest.dto';
-import { UserService } from '../user/user.service';
 import { AuthGuard } from '../guards/Auth.guard';
 import { User } from '../decorators/user.decorator';
 import {
@@ -27,11 +25,11 @@ import {
 } from '@nestjs/platform-express';
 import { join } from 'path';
 import { FileService } from '../file/file.service';
+import { User as UserEntity } from '../user/entity/user.entity';
 
 @Controller('auth')
 export class AuthController {
   constructor(
-    private readonly userService: UserService,
     private readonly auth: AuthService,
     private readonly fileService: FileService,
   ) {}
@@ -57,8 +55,8 @@ export class AuthController {
   }
   @UseGuards(AuthGuard)
   @Post('me')
-  async me(@User() user, @Req() { tokenPayload }) {
-    return { user, tokenPayload };
+  async me(@User() user: UserEntity) {
+    return user;
   }
 
   @UseInterceptors(FileInterceptor('file'))
@@ -76,16 +74,9 @@ export class AuthController {
     )
     photo: Express.Multer.File,
   ) {
-    const path = join(
-      __dirname,
-      '..',
-      '..',
-      'uploads',
-      'photos',
-      `photo-${user.id}.png`,
-    );
+    const filename = `photo-${user.id}.png`;
     try {
-      await this.fileService.upload(photo, path);
+      await this.fileService.upload(photo, filename);
     } catch (error) {
       throw new BadRequestException(error);
     }
