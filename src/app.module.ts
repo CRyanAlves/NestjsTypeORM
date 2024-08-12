@@ -13,7 +13,9 @@ import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      envFilePath: process.env.ENV === 'test' ? '.env.test' : '.env',
+    }),
     ThrottlerModule.forRoot([{ ttl: 60000, limit: 50 }]),
     forwardRef(() => UserModule),
     forwardRef(() => AuthModule),
